@@ -1,0 +1,61 @@
+@startuml
+title T.R.A.I.L — Diagramme de séquence\nDépôt d'un rapport de conditions
+
+skinparam sequenceArrowThickness 1.5
+skinparam sequenceGroupBorderColor #2d6a4f
+skinparam sequenceGroupBackgroundColor #f0faf4
+skinparam sequenceParticipantBackgroundColor #f8f6f2
+skinparam sequenceParticipantBorderColor #2d6a4f
+skinparam sequenceActorBorderColor #2d6a4f
+
+actor "Pratiquant" as U
+participant "Navigateur" as B
+participant "Flask\n(Back-end)" as F
+participant "Flask-Login\n(Session)" as S
+database "SQLite\n(BDD)" as DB
+
+== Consultation du sentier ==
+
+U -> B : GET /sentiers/42
+B -> F : Requête HTTP GET /sentiers/42
+F -> DB : SELECT s.id, s.nom, s.region, s.distance_km,\n       s.denivele_pos, s.difficulte, s.types_pratique\n  FROM sentier s WHERE s.id = 42
+DB --> F : Ligne sentier
+F -> DB : SELECT r.statut, r.type_pratique, r.obstacles,\n       r.commentaire, r.date_rapport, u.nom\n  FROM rapport r JOIN user u ON u.id = r.user_id\n WHERE r.sentier_id = 42\n   AND r.date_expiration > datetime('now')\n ORDER BY r.date_rapport DESC LIMIT 20
+DB --> F : Rapports actifs (non expirés)
+F -> B : HTML rendu — détail sentier + rapports colorés
+B --> U : Affichage : statuts praticable/partiel/fermé
+
+== Dépôt d'un rapport de conditions ==
+
+U -> B : Clic "Déposer un rapport"
+B -> F : GET /rapports/nouveau?sentier_id=42
+F -> S : Vérification de la session
+alt Utilisateur non connecté
+    S --> F : session vide
+    F --> B : Redirect 302 → /auth/connexion
+    B --> U : Page de connexion
+else Utilisateur connecté
+    S --> F : user_id = 7
+    F --> B : Formulaire HTML\n(statut, type_pratique, obstacles, commentaire)
+    B --> U : Affichage du formulaire
+
+    == Soumission ==
+
+    U -> B : Sélectionne statut=partiel, type=trail,\nobstacles=[neige, boue], commentaire="..."
+    B -> F : POST /rapports/nouveau\n  {sentier_id=42, statut='partiel',\n   type_pratique='trail',\n   obstacles='neige,boue',\n   commentaire='Neige dès 1400m, sentier glissant'}
+
+    F -> F : Validation serveur\n• statut ∈ {praticable, partiel, ferme} ✓\n• type_pratique valide ✓\n• token CSRF valide ✓
+
+    alt Données invalides
+        F --> B : HTML formulaire + messages d'erreur
+        B --> U : Formulaire avec erreurs
+    else Données valides
+        F -> F : Calcul date_expiration =\ndatetime('now') + 7 jours
+        F -> DB : INSERT INTO rapport\n  (user_id, sentier_id, date_rapport,\n   date_expiration, statut, type_pratique,\n   obstacles, commentaire)\nVALUES (7, 42, datetime('now'),\n        datetime('now','+7 days'),\n        'partiel', 'trail',\n        'neige,boue', '...')
+        DB --> F : OK — id = 89
+        F --> B : Redirect 302 → /sentiers/42\n+ flash("Rapport déposé !", "succes")
+        B --> U : Page sentier avec nouveau rapport\nvisible en orange "⚠ Partiel"
+    end
+end
+
+@enduml

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block titre %}{% if mode=='modifier' %}Modifier{% else %}Nouveau sentier{% endif %} — T.R.A.I.L{% endblock %}
+{% block contenu %}
+<section class="carte" style="max-width:600px;margin:2rem auto">
+    <h1>{% if mode=='modifier' %}Modifier le sentier{% else %}Ajouter un sentier{% endif %}</h1>
+    <form method="post">
+        <div class="champ">
+            <label for="nom">Nom du sentier *</label>
+            <input type="text" id="nom" name="nom" value="{{ sentier.nom if sentier else '' }}" required>
+        </div>
+        <div class="champ">
+            <label for="region">Région *</label>
+            <input type="text" id="region" name="region" value="{{ sentier.region if sentier else '' }}" required placeholder="ex: Alpes, Pyrénées...">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="champ">
+                <label for="distance_km">Distance (km) *</label>
+                <input type="number" id="distance_km" name="distance_km" value="{{ sentier.distance_km if sentier else '' }}" step="0.1" min="0.1" required>
+            </div>
+            <div class="champ">
+                <label for="denivele_pos">Dénivelé + (m) *</label>
+                <input type="number" id="denivele_pos" name="denivele_pos" value="{{ sentier.denivele_pos if sentier else '' }}" min="0" required>
+            </div>
+        </div>
+        <div class="champ">
+            <label for="difficulte">Difficulté *</label>
+            <select id="difficulte" name="difficulte" required>
+                {% for d in difficultes %}
+                <option value="{{ d }}" {% if sentier and sentier.difficulte==d %}selected{% endif %}>{{ d|capitalize }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="champ">
+            <label>Types de pratique</label>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:.25rem">
+                {% for t in types_pratique %}
+                <label style="display:flex;align-items:center;gap:.4rem;font-weight:normal">
+                    <input type="checkbox" name="types_pratique" value="{{ t }}"
+                        {% if sentier and t in sentier.types_pratique.split(',') %}checked{% elif not sentier and t=='trail' %}checked{% endif %}>
+                    {{ t }}
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="champ">
+            <label for="terrain">Type de terrain</label>
+            <input type="text" id="terrain" name="terrain" value="{{ sentier.terrain if sentier and sentier.terrain else '' }}" placeholder="ex: Montagne, Forêt, Littoral...">
+        </div>
+        <div class="champ">
+            <label for="saison_recommandee">Saison recommandée</label>
+            <input type="text" id="saison_recommandee" name="saison_recommandee" value="{{ sentier.saison_recommandee if sentier and sentier.saison_recommandee else '' }}" placeholder="ex: Printemps-Automne">
+        </div>
+        <div class="champ">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="4">{{ sentier.description if sentier and sentier.description else '' }}</textarea>
+        </div>
+        <div style="display:flex;gap:.75rem">
+            <button type="submit" class="btn btn-primaire">{% if mode=='modifier' %}Enregistrer{% else %}Ajouter{% endif %}</button>
+            <a href="{{ url_for('sentiers.index') }}" class="btn">Annuler</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

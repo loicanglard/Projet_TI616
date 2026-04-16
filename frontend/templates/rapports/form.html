@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block titre %}{% if mode=='modifier' %}Modifier le rapport{% else %}Déposer un rapport{% endif %} — T.R.A.I.L{% endblock %}
+{% block contenu %}
+<section class="carte" style="max-width:540px;margin:2rem auto">
+    <h1>{% if mode=='modifier' %}Modifier le rapport{% else %}Déposer un rapport de conditions{% endif %}</h1>
+    <form method="post">
+        {% if mode=='nouveau' %}
+        <div class="champ">
+            <label for="sentier_id">Sentier *</label>
+            <select id="sentier_id" name="sentier_id" required>
+                <option value="">-- Choisir un sentier --</option>
+                {% for s in sentiers %}
+                <option value="{{ s.id }}" {% if sentier and sentier.id==s.id %}selected{% endif %}>
+                    {{ s.nom }} ({{ s.region }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% else %}
+        <p class="texte-doux">Sentier : <strong>{{ sentier.nom }}</strong></p>
+        {% endif %}
+
+        <div class="champ">
+            <label>État du sentier *</label>
+            <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.25rem">
+                {% for s in statuts %}
+                <label style="display:flex;align-items:center;gap:.5rem;font-weight:normal">
+                    <input type="radio" name="statut" value="{{ s }}"
+                        {% if (rapport and rapport.statut==s) or (not rapport and loop.first) %}checked{% endif %} required>
+                    {% if s=='praticable' %}✓ Praticable{% elif s=='partiel' %}⚠ Partiellement praticable{% else %}✗ Fermé / Impraticable{% endif %}
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="champ">
+            <label for="type_pratique">Type de pratique concerné *</label>
+            <select id="type_pratique" name="type_pratique" required>
+                {% for t in types_pratique %}
+                <option value="{{ t }}" {% if rapport and rapport.type_pratique==t %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="champ">
+            <label>Obstacles identifiés</label>
+            <div style="display:flex;flex-wrap:wrap;gap:.75rem;margin-top:.25rem">
+                {% for o in obstacles_possibles %}
+                <label style="display:flex;align-items:center;gap:.4rem;font-weight:normal">
+                    <input type="checkbox" name="obstacles" value="{{ o }}"
+                        {% if obstacles_actifs is defined and o in obstacles_actifs %}checked{% endif %}>
+                    {{ o.replace('_', ' ') }}
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="champ">
+            <label for="commentaire">Commentaire libre</label>
+            <textarea id="commentaire" name="commentaire" rows="3" placeholder="Conditions détaillées, conseils...">{{ rapport.commentaire if rapport and rapport.commentaire else '' }}</textarea>
+        </div>
+
+        <p class="texte-petit texte-doux">Le rapport sera valide pendant <strong>7 jours</strong>.</p>
+
+        <div style="display:flex;gap:.75rem;margin-top:1rem">
+            <button type="submit" class="btn btn-primaire">{% if mode=='modifier' %}Enregistrer{% else %}Déposer le rapport{% endif %}</button>
+            {% if sentier %}
+            <a href="{{ url_for('sentiers.detail', id=sentier.id) }}" class="btn">Annuler</a>
+            {% else %}
+            <a href="{{ url_for('sentiers.index') }}" class="btn">Annuler</a>
+            {% endif %}
+        </div>
+    </form>
+</section>
+{% endblock %}

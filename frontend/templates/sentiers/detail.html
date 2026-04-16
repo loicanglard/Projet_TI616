@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block titre %}{{ sentier.nom }} — T.R.A.I.L{% endblock %}
+{% block contenu %}
+<section>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
+        <div>
+            <p class="texte-petit texte-doux"><a href="{{ url_for('sentiers.index') }}">← Sentiers</a></p>
+            <h1>{{ sentier.nom }}</h1>
+            <p class="texte-doux">{{ sentier.region }} · {{ sentier.distance_km }} km · +{{ sentier.denivele_pos }} m · <strong>{{ sentier.difficulte }}</strong></p>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('rapports.nouveau', sentier_id=sentier.id) }}" class="btn btn-primaire">+ Déposer un rapport</a>
+            {% endif %}
+            {% if current_user.is_authenticated and (current_user.id == sentier.user_id or current_user.is_admin) %}
+            <a href="{{ url_for('sentiers.modifier', id=sentier.id) }}" class="btn btn-secondaire">Modifier</a>
+            <form method="post" action="{{ url_for('sentiers.supprimer', id=sentier.id) }}" style="display:inline" onsubmit="return confirm('Supprimer ce sentier ?')">
+                <button type="submit" class="btn" style="background:#c0392b;color:#fff">Supprimer</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="carte mt-2">
+        <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+            {% if sentier.types_pratique %}
+            <div>
+                <span class="texte-petit texte-doux">Types de pratique</span><br>
+                {% for t in sentier.types_pratique.split(',') %}
+                <span class="badge badge-{{ t }}">{{ t }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if sentier.terrain %}
+            <div><span class="texte-petit texte-doux">Terrain</span><br>{{ sentier.terrain }}</div>
+            {% endif %}
+            {% if sentier.saison_recommandee %}
+            <div><span class="texte-petit texte-doux">Saison</span><br>{{ sentier.saison_recommandee }}</div>
+            {% endif %}
+            <div><span class="texte-petit texte-doux">Ajouté par</span><br>@{{ sentier.auteur_nom }}</div>
+        </div>
+        {% if sentier.description %}
+        <p style="margin-top:1rem">{{ sentier.description }}</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="mt-3">
+    <h2>Rapports de conditions</h2>
+    {% if rapports %}
+    <div class="liste-rapports mt-1">
+        {% for r in rapports %}
+        <article class="carte rapport-item">
+            <div class="rapport-header">
+                <span class="statut statut-{{ r.statut }}">
+                    {% if r.statut == 'praticable' %}✓ Praticable
+                    {% elif r.statut == 'partiel' %}⚠ Partiel
+                    {% else %}✗ Fermé{% endif %}
+                </span>
+                <span class="badge badge-{{ r.type_pratique }}">{{ r.type_pratique }}</span>
+                {% if r.date_expiration < (now|default('9999')) %}
+                <span class="texte-petit" style="color:#c0392b">Expiré</span>
+                {% endif %}
+                <span class="texte-petit texte-doux">{{ r.date_rapport[:10] }}</span>
+                <span class="texte-petit texte-doux">par @{{ r.user_nom }}</span>
+            </div>
+            {% if r.obstacles %}
+            <p class="texte-petit mt-1">
+                Obstacles : {% for o in r.obstacles.split(',') %}<span class="badge">{{ o }}</span> {% endfor %}
+            </p>
+            {% endif %}
+            {% if r.commentaire %}<p class="texte-petit mt-1">{{ r.commentaire }}</p>{% endif %}
+            {% if current_user.is_authenticated and (current_user.id == r.user_id or current_user.is_admin) %}
+            <div style="display:flex;gap:.5rem;margin-top:.75rem">
+                <a href="{{ url_for('rapports.modifier', id=r.id) }}" class="btn texte-petit">Modifier</a>
+                <form method="post" action="{{ url_for('rapports.supprimer', id=r.id) }}" onsubmit="return confirm('Supprimer ce rapport ?')">
+                    <button type="submit" class="btn texte-petit" style="background:#c0392b;color:#fff">Supprimer</button>
+                </form>
+            </div>
+            {% endif %}
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="texte-doux mt-1">Aucun rapport pour ce sentier.
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('rapports.nouveau', sentier_id=sentier.id) }}">Soyez le premier à en déposer un !</a>
+        {% endif %}
+    </p>
+    {% endif %}
+</section>
+{% endblock %}

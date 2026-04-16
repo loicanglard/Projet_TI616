@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block titre %}Sentiers — T.R.A.I.L{% endblock %}
+{% block contenu %}
+<section>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <h1>Sentiers</h1>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('sentiers.nouveau') }}" class="btn btn-primaire">+ Ajouter un sentier</a>
+        {% endif %}
+    </div>
+
+    <form method="get" style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem">
+        <select name="region">
+            <option value="">Toutes les régions</option>
+            {% for r in regions %}
+            <option value="{{ r }}" {% if r==region %}selected{% endif %}>{{ r }}</option>
+            {% endfor %}
+        </select>
+        <select name="difficulte">
+            <option value="">Toutes les difficultés</option>
+            {% for d in difficultes %}
+            <option value="{{ d }}" {% if d==difficulte %}selected{% endif %}>{{ d|capitalize }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-secondaire">Filtrer</button>
+        {% if region or difficulte %}
+        <a href="{{ url_for('sentiers.index') }}" class="btn">Réinitialiser</a>
+        {% endif %}
+    </form>
+</section>
+
+<section class="mt-2">
+    {% if sentiers %}
+    <p class="texte-petit texte-doux">{{ total }} sentier(s) trouvé(s)</p>
+    <div class="liste-sentiers mt-1">
+        {% for s in sentiers %}
+        <article class="carte">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem">
+                <h2><a href="{{ url_for('sentiers.detail', id=s.id) }}">{{ s.nom }}</a></h2>
+                {% set statut = dernier_rapport.get(s.id) %}
+                {% if statut == 'praticable' %}
+                <span class="statut statut-praticable">✓ Praticable</span>
+                {% elif statut == 'partiel' %}
+                <span class="statut statut-partiel">⚠ Partiel</span>
+                {% elif statut == 'ferme' %}
+                <span class="statut statut-ferme">✗ Fermé</span>
+                {% else %}
+                <span class="statut" style="background:#eee;color:#666">? Sans info</span>
+                {% endif %}
+            </div>
+            <p class="texte-petit texte-doux">
+                {{ s.region }} · {{ s.distance_km }} km · +{{ s.denivele_pos }} m ·
+                <span class="badge">{{ s.difficulte }}</span>
+            </p>
+            {% if s.description %}
+            <p class="texte-petit mt-1">{{ s.description|truncate(120) }}</p>
+            {% endif %}
+        </article>
+        {% endfor %}
+    </div>
+
+    {% if total > par_page %}
+    <nav style="display:flex;gap:.5rem;margin-top:1.5rem">
+        {% if page > 1 %}
+        <a href="?page={{ page-1 }}&region={{ region }}&difficulte={{ difficulte }}" class="btn btn-secondaire">← Précédent</a>
+        {% endif %}
+        <span class="texte-petit texte-doux" style="line-height:2.5">Page {{ page }} / {{ (total // par_page) + (1 if total % par_page else 0) }}</span>
+        {% if page * par_page < total %}
+        <a href="?page={{ page+1 }}&region={{ region }}&difficulte={{ difficulte }}" class="btn btn-secondaire">Suivant →</a>
+        {% endif %}
+    </nav>
+    {% endif %}
+
+    {% else %}
+    <p class="texte-doux">Aucun sentier trouvé. <a href="{{ url_for('sentiers.nouveau') }}">Soyez le premier à en ajouter un !</a></p>
+    {% endif %}
+</section>
+{% endblock %}

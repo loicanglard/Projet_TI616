@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block titre %}T.R.A.I.L — Terrain Rando Alerte Info Live{% endblock %}
+
+{% block contenu %}
+<section>
+    <h1>Ce sentier est-il praticable aujourd'hui&nbsp;?</h1>
+    <p class="texte-doux">
+        Consultez et partagez l'état réel des sentiers trail, VTT et randonnée.
+        Rapports communautaires — valides 7 jours.
+    </p>
+    <div class="liens-actions mt-2">
+        <a href="{{ url_for('sentiers.index') }}" class="btn btn-primaire">Consulter les sentiers</a>
+        {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('auth.inscription') }}" class="btn btn-secondaire">Déposer un rapport</a>
+        {% endif %}
+    </div>
+</section>
+
+{% if rapports_recents %}
+<section class="mt-3">
+    <h2>Signalements récents</h2>
+    <div class="liste-rapports mt-1">
+        {% for r in rapports_recents %}
+        <article class="rapport-item carte">
+            <div class="rapport-header">
+                <span class="statut statut-{{ r.statut }}">
+                    {% if r.statut == 'praticable' %}✓ Praticable
+                    {% elif r.statut == 'partiel' %}⚠ Partiel
+                    {% else %}✗ Fermé{% endif %}
+                </span>
+                <span class="badge badge-{{ r.type_pratique }}">{{ r.type_pratique|upper }}</span>
+                <span class="texte-petit texte-doux">il y a {{ r.anciennete }}</span>
+            </div>
+            <h3 class="mt-1">
+                <a href="{{ url_for('sentiers.detail', id=r.sentier_id) }}">{{ r.sentier_nom }}</a>
+            </h3>
+            <p class="texte-petit texte-doux">{{ r.region }} — signalé par @{{ r.user_nom }}</p>
+            {% if r.commentaire %}
+                <p class="texte-petit mt-1">{{ r.commentaire }}</p>
+            {% endif %}
+        </article>
+        {% endfor %}
+    </div>
+    <p class="mt-2 texte-petit">
+        <a href="{{ url_for('sentiers.index') }}">Voir tous les sentiers →</a>
+    </p>
+</section>
+{% endif %}
+
+<section class="mt-3 carte texte-petit texte-doux">
+    <strong>Site Green IT</strong> — Pages &lt; 200 Ko &nbsp;·&nbsp; 0 tracker &nbsp;·&nbsp;
+    Rapports expirés automatiquement après 7 jours &nbsp;·&nbsp; Hébergement sobre
+</section>
+{% endblock %}

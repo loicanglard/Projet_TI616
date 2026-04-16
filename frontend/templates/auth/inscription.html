@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block titre %}Inscription — T.R.A.I.L{% endblock %}
+{% block contenu %}
+<section class="carte" style="max-width:480px;margin:2rem auto">
+    <h1>Créer un compte</h1>
+    <form method="post">
+        <div class="champ">
+            <label for="nom">Nom d'utilisateur</label>
+            <input type="text" id="nom" name="nom" value="{{ nom|default('') }}" required autofocus>
+        </div>
+        <div class="champ">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="{{ email|default('') }}" required>
+        </div>
+        <div class="champ">
+            <label for="mdp">Mot de passe <span class="texte-doux texte-petit">(8 car. min.)</span></label>
+            <input type="password" id="mdp" name="mdp" required minlength="8">
+        </div>
+        <div class="champ">
+            <label for="mdp_confirm">Confirmer le mot de passe</label>
+            <input type="password" id="mdp_confirm" name="mdp_confirm" required>
+        </div>
+        <div class="champ">
+            <label for="niveau">Niveau</label>
+            <select id="niveau" name="niveau">
+                <option value="débutant" {% if niveau|default('débutant')=='débutant' %}selected{% endif %}>Débutant</option>
+                <option value="intermédiaire" {% if niveau|default('')=='intermédiaire' %}selected{% endif %}>Intermédiaire</option>
+                <option value="expert" {% if niveau|default('')=='expert' %}selected{% endif %}>Expert</option>
+            </select>
+        </div>
+        <div class="champ">
+            <label for="localisation">Localisation <span class="texte-doux texte-petit">(optionnel)</span></label>
+            <input type="text" id="localisation" name="localisation" value="{{ localisation|default('') }}" placeholder="ex: Grenoble">
+        </div>
+        <button type="submit" class="btn btn-primaire" style="width:100%">Créer mon compte</button>
+    </form>
+    <p class="texte-petit texte-doux mt-2">
+        Déjà un compte ? <a href="{{ url_for('auth.connexion') }}">Se connecter</a>
+    </p>
+</section>
+{% endblock %}

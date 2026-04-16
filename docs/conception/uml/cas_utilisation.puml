@@ -1,0 +1,87 @@
+@startuml
+title T.R.A.I.L — Diagramme de cas d'utilisation
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+    BackgroundColor #f8f6f2
+    BorderColor #2d6a4f
+    ArrowColor #2d6a4f
+}
+
+actor "Visiteur" as V
+actor "Pratiquant\nconnecté" as C
+actor "Administrateur" as A
+
+C --|> V
+A --|> C
+
+rectangle "T.R.A.I.L" {
+
+    package "Authentification" {
+        usecase "S'inscrire"       as UC_INS
+        usecase "Se connecter"     as UC_CNX
+        usecase "Se déconnecter"   as UC_DCX
+    }
+
+    package "Sentiers" {
+        usecase "Consulter la liste\ndes sentiers"          as UC_LS
+        usecase "Voir le détail\net les rapports actifs"    as UC_DS
+        usecase "Ajouter un sentier"                        as UC_AS
+        usecase "Modifier son sentier"                      as UC_MS
+        usecase "Supprimer son sentier"                     as UC_SPS
+    }
+
+    package "Rapports de conditions" {
+        usecase "Déposer un rapport\nde conditions"         as UC_DR
+        usecase "Modifier son rapport"                      as UC_MR
+        usecase "Supprimer son rapport"                     as UC_SPR
+    }
+
+    package "Profil" {
+        usecase "Voir son profil\net ses rapports"          as UC_VP
+        usecase "Modifier son profil"                       as UC_MP
+        usecase "Supprimer son compte"                      as UC_SC
+    }
+
+    package "Administration" {
+        usecase "Gérer tous\nles utilisateurs"              as UC_GU
+        usecase "Modérer tout\nle contenu"                 as UC_MC
+    }
+}
+
+' Visiteur
+V --> UC_INS
+V --> UC_CNX
+V --> UC_LS
+V --> UC_DS
+
+' Pratiquant connecté (hérite du Visiteur)
+C --> UC_DCX
+C --> UC_AS
+C --> UC_MS
+C --> UC_SPS
+C --> UC_DR
+C --> UC_MR
+C --> UC_SPR
+C --> UC_VP
+C --> UC_MP
+C --> UC_SC
+
+' Admin (hérite du Pratiquant connecté)
+A --> UC_GU
+A --> UC_MC
+
+' Relations include
+UC_AS  .> UC_CNX : <<include>>
+UC_DR  .> UC_CNX : <<include>>
+UC_MS  .> UC_CNX : <<include>>
+UC_MP  .> UC_CNX : <<include>>
+
+' Relations extend
+UC_SPS .> UC_MS  : <<extend>>\nconfirmation
+UC_SPR .> UC_MR  : <<extend>>\nconfirmation
+UC_SC  .> UC_MP  : <<extend>>\nconfirmation
+
+@enduml

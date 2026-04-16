@@ -1,0 +1,221 @@
+/* TrailMémoire — Feuille de style sobre */
+/* Polices système uniquement — 0 requête externe */
+
+:root {
+    --couleur-fond:        #f8f6f2;
+    --couleur-fond-card:   #ffffff;
+    --couleur-texte:       #1a1a1a;
+    --couleur-texte-doux:  #555555;
+    --couleur-primaire:    #2d6a4f;
+    --couleur-primaire-h:  #1b4332;
+    --couleur-bordure:     #d6cfc4;
+    --couleur-erreur:      #b5290e;
+    --couleur-succes:      #2d6a4f;
+    --rayon:               6px;
+    --espace:              1rem;
+    --largeur-max:         820px;
+    --police:              system-ui, -apple-system, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --couleur-fond:       #1a1a1a;
+        --couleur-fond-card:  #242424;
+        --couleur-texte:      #e8e4de;
+        --couleur-texte-doux: #9e9e9e;
+        --couleur-primaire:   #52b788;
+        --couleur-primaire-h: #74c69d;
+        --couleur-bordure:    #333333;
+    }
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: var(--police);
+    font-size: 1rem;
+    line-height: 1.6;
+    background: var(--couleur-fond);
+    color: var(--couleur-texte);
+}
+
+/* Mise en page */
+.conteneur { max-width: var(--largeur-max); margin: 0 auto; padding: 0 var(--espace); }
+
+/* Navigation */
+nav {
+    border-bottom: 1px solid var(--couleur-bordure);
+    padding: 0.75rem 0;
+}
+nav .conteneur {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espace);
+}
+.nav-logo {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--couleur-primaire);
+    text-decoration: none;
+}
+.nav-liens { display: flex; gap: 1.25rem; align-items: center; }
+.nav-liens a { color: var(--couleur-texte-doux); text-decoration: none; font-size: 0.9rem; }
+.nav-liens a:hover { color: var(--couleur-primaire); }
+
+/* Contenu principal */
+main { padding: 2rem 0; min-height: calc(100vh - 140px); }
+
+/* Titres */
+h1 { font-size: 1.6rem; margin-bottom: 1rem; }
+h2 { font-size: 1.25rem; margin-bottom: 0.75rem; }
+h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+
+/* Cartes */
+.carte {
+    background: var(--couleur-fond-card);
+    border: 1px solid var(--couleur-bordure);
+    border-radius: var(--rayon);
+    padding: 1.25rem;
+}
+.grille-cartes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Badges difficulté */
+.badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    font-weight: 600;
+}
+.badge-facile    { background: #d8f3dc; color: #1b4332; }
+.badge-moyen     { background: #fff3cd; color: #6d4c00; }
+.badge-difficile { background: #fde8e0; color: #7b1d0e; }
+.badge-expert    { background: #e8e0f5; color: #3d1a78; }
+
+/* Formulaires */
+.formulaire { max-width: 500px; }
+.champ { margin-bottom: 1rem; }
+.champ label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+}
+.champ input,
+.champ select,
+.champ textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--couleur-bordure);
+    border-radius: var(--rayon);
+    background: var(--couleur-fond-card);
+    color: var(--couleur-texte);
+    font: inherit;
+    font-size: 0.95rem;
+}
+.champ input:focus,
+.champ select:focus,
+.champ textarea:focus {
+    outline: 2px solid var(--couleur-primaire);
+    outline-offset: 1px;
+}
+.champ textarea { resize: vertical; min-height: 100px; }
+
+/* Boutons */
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1.1rem;
+    border: none;
+    border-radius: var(--rayon);
+    font: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+}
+.btn-primaire  { background: var(--couleur-primaire); color: #fff; }
+.btn-primaire:hover { background: var(--couleur-primaire-h); }
+.btn-secondaire { background: transparent; border: 1px solid var(--couleur-bordure); color: var(--couleur-texte); }
+.btn-secondaire:hover { border-color: var(--couleur-primaire); }
+.btn-danger    { background: var(--couleur-erreur); color: #fff; }
+
+/* Messages flash */
+.flash { padding: 0.75rem 1rem; border-radius: var(--rayon); margin-bottom: 1rem; font-size: 0.9rem; }
+.flash-succes { background: #d8f3dc; color: #1b4332; }
+.flash-erreur { background: #fde8e0; color: #7b1d0e; }
+
+/* Pagination */
+.pagination { display: flex; gap: 0.5rem; margin-top: 1.5rem; }
+.pagination a,
+.pagination span {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--couleur-bordure);
+    border-radius: var(--rayon);
+    font-size: 0.875rem;
+    text-decoration: none;
+    color: var(--couleur-texte);
+}
+.pagination a:hover { border-color: var(--couleur-primaire); }
+.pagination .actif { background: var(--couleur-primaire); color: #fff; border-color: var(--couleur-primaire); }
+
+/* Métadonnées sentier */
+.meta-sentier {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--couleur-texte-doux);
+    margin: 0.5rem 0 1rem;
+}
+.meta-sentier span::before { margin-right: 0.25rem; }
+
+/* Résumé sortie */
+.sortie-item {
+    border-top: 1px solid var(--couleur-bordure);
+    padding: 0.75rem 0;
+    font-size: 0.9rem;
+}
+.sortie-item:first-child { border-top: none; }
+
+/* Ressenti étoiles (texte) */
+.ressenti { color: var(--couleur-primaire); letter-spacing: 2px; }
+
+/* Pied de page */
+footer {
+    border-top: 1px solid var(--couleur-bordure);
+    padding: 1rem 0;
+    font-size: 0.8rem;
+    color: var(--couleur-texte-doux);
+    text-align: center;
+}
+
+/* Statuts de praticabilité */
+.statut { display: inline-block; font-weight: 700; font-size: 0.85rem; padding: 0.2rem 0.6rem; border-radius: 3px; }
+.statut-praticable { background: #d8f3dc; color: #1b4332; }
+.statut-partiel     { background: #fff3cd; color: #6d4c00; }
+.statut-ferme       { background: #fde8e0; color: #7b1d0e; }
+
+/* Badges type pratique */
+.badge-trail     { background: #e0f0ff; color: #1a4a7a; }
+.badge-vtt       { background: #f0e8ff; color: #4a1a7a; }
+.badge-rando     { background: #e8f5e0; color: #2d5a1b; }
+.badge-ski_rando { background: #e8f0ff; color: #1a2a7a; }
+
+/* Liste rapports accueil */
+.liste-rapports { display: flex; flex-direction: column; gap: 0.75rem; }
+.rapport-item { padding: 1rem; }
+.rapport-header { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+
+/* Utilitaires */
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.texte-doux { color: var(--couleur-texte-doux); }
+.texte-petit { font-size: 0.85rem; }
+.liens-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }

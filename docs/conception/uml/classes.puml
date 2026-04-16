@@ -1,0 +1,96 @@
+@startuml
+title T.R.A.I.L — Diagramme de classes
+
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor #f8f6f2
+    BorderColor #2d6a4f
+    ArrowColor #2d6a4f
+    FontSize 12
+}
+
+class User {
+    +id : INTEGER <<PK>>
+    +nom : VARCHAR(100)
+    +email : VARCHAR(150) <<UNIQUE>>
+    +mdp_hash : VARCHAR(255)
+    +niveau : ENUM
+    +localisation : VARCHAR(100)
+    +is_admin : BOOLEAN
+    +date_inscription : DATETIME
+    --
+    +inscrire(nom, email, mdp) : User
+    +verifier_mdp(mdp) : Boolean
+    +modifier_profil(data) : void
+    +supprimer() : void
+}
+
+note right of User
+  niveau ∈ {débutant,
+  intermédiaire, expert}
+end note
+
+class Sentier {
+    +id : INTEGER <<PK>>
+    +nom : VARCHAR(150)
+    +region : VARCHAR(100)
+    +distance_km : REAL
+    +denivele_pos : INTEGER
+    +difficulte : ENUM
+    +types_pratique : TEXT
+    +terrain : VARCHAR(100)
+    +saison_recommandee : VARCHAR(100)
+    +description : TEXT
+    +date_ajout : DATETIME
+    +user_id : INTEGER <<FK>>
+    --
+    +ajouter(data) : Sentier
+    +modifier(data) : void
+    +supprimer() : void
+    +get_rapports_actifs() : List<Rapport>
+    +statut_actuel() : String
+}
+
+note right of Sentier
+  difficulte ∈ {facile, moyen,
+  difficile, expert}
+  types_pratique : trail, vtt,
+  rando, ski_rando (multi)
+end note
+
+class Rapport {
+    +id : INTEGER <<PK>>
+    +user_id : INTEGER <<FK>>
+    +sentier_id : INTEGER <<FK>>
+    +date_rapport : DATETIME
+    +date_expiration : DATETIME
+    +statut : ENUM
+    +type_pratique : ENUM
+    +obstacles : TEXT
+    +commentaire : TEXT
+    --
+    +deposer(data) : Rapport
+    +modifier(data) : void
+    +supprimer() : void
+    +est_actif() : Boolean
+    +anciennete() : String
+}
+
+note right of Rapport
+  statut ∈ {praticable,
+  partiel, ferme}
+  type_pratique ∈ {trail,
+  vtt, rando, ski_rando}
+  date_expiration =
+  date_rapport + 7 jours
+  obstacles (csv) : neige,
+  verglas, boue, crue,
+  arbre_tombe, travaux...
+end note
+
+' Relations
+User    "1" --o "0..*" Sentier : crée >
+User    "1" --o "0..*" Rapport : dépose >
+Sentier "1" --o "0..*" Rapport : reçoit >
+
+@enduml
