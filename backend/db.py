@@ -23,6 +23,12 @@ def close_db(e=None):
 def init_db(app):
     app.teardown_appcontext(close_db)
 
+    # Auto-initialisation au démarrage (CREATE TABLE IF NOT EXISTS = sans danger)
+    with app.app_context():
+        db = get_db()
+        with app.open_resource('database/schema.sql') as f:
+            db.executescript(f.read().decode('utf8'))
+
     @app.cli.command('init-db')
     def init_db_command():
         db = get_db()
