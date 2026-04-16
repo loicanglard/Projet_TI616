@@ -12,7 +12,7 @@
 
 <nav>
     <div class="conteneur">
-        <a href="{{ url_for('sentiers.index') }}" class="nav-logo">T.R.A.I.L</a>
+        <a href="{{ url_for('index') }}" class="nav-logo">T.R.A.I.L</a>
         <div class="nav-liens">
             <a href="{{ url_for('sentiers.index') }}">Sentiers</a>
             {% if current_user.is_authenticated %}

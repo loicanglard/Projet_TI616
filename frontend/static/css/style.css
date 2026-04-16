@@ -145,6 +145,15 @@ h3 { font-size: 1rem; margin-bottom: 0.5rem; }
 .btn-secondaire:hover { border-color: var(--couleur-primaire); }
 .btn-danger    { background: var(--couleur-erreur); color: #fff; }
 
+select.btn-secondaire {
+    background-color: var(--couleur-fond);
+    text-align: center;
+    text-align-last: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+}
 /* Messages flash */
 .flash { padding: 0.75rem 1rem; border-radius: var(--rayon); margin-bottom: 1rem; font-size: 0.9rem; }
 .flash-succes { background: #d8f3dc; color: #1b4332; }
