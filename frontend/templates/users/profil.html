@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block titre %}Mon profil — T.R.A.I.L{% endblock %}
+{% block contenu %}
+<section>
+    <h1>Mon profil — @{{ current_user.nom }}</h1>
+    <p class="texte-doux texte-petit">Inscrit le {{ current_user.date_inscription[:10] }}</p>
+</section>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem" class="grille-profil">
+    <section class="carte">
+        <h2>Modifier mes informations</h2>
+        <form method="post">
+            <div class="champ">
+                <label for="nom">Nom</label>
+                <input type="text" id="nom" name="nom" value="{{ current_user.nom }}" required>
+            </div>
+            <div class="champ">
+                <label for="niveau">Niveau</label>
+                <select id="niveau" name="niveau">
+                    {% for n in niveaux %}
+                    <option value="{{ n }}" {% if current_user.niveau==n %}selected{% endif %}>{{ n|capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="champ">
+                <label for="localisation">Localisation</label>
+                <input type="text" id="localisation" name="localisation" value="{{ current_user.localisation or '' }}">
+            </div>
+            <hr style="border:none;border-top:1px solid #eee;margin:1rem 0">
+            <p class="texte-petit texte-doux">Laisser vide pour garder le mot de passe actuel</p>
+            <div class="champ">
+                <label for="mdp">Nouveau mot de passe</label>
+                <input type="password" id="mdp" name="mdp" minlength="8">
+            </div>
+            <div class="champ">
+                <label for="mdp_confirm">Confirmer</label>
+                <input type="password" id="mdp_confirm" name="mdp_confirm">
+            </div>
+            <button type="submit" class="btn btn-primaire">Enregistrer</button>
+        </form>
+
+        <hr style="border:none;border-top:1px solid #eee;margin:1.5rem 0">
+        <h3 style="color:#c0392b">Zone dangereuse</h3>
+        <form method="post" action="{{ url_for('users.supprimer') }}" onsubmit="return confirm('Supprimer définitivement votre compte ?')">
+            <button type="submit" class="btn" style="background:#c0392b;color:#fff">Supprimer mon compte</button>
+        </form>
+    </section>
+
+    <div>
+        <section class="carte">
+            <h2>Mes rapports récents</h2>
+            {% if rapports %}
+            {% for r in rapports %}
+            <div style="padding:.5rem 0;border-bottom:1px solid #f0f0f0">
+                <span class="statut statut-{{ r.statut }}" style="font-size:.75rem">{{ r.statut }}</span>
+                <a href="{{ url_for('sentiers.detail', id=r.sentier_id) }}" class="texte-petit" style="margin-left:.5rem">{{ r.sentier_nom }}</a>
+                <span class="texte-petit texte-doux"> · {{ r.date_rapport[:10] }}</span>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="texte-doux texte-petit">Aucun rapport déposé.</p>
+            {% endif %}
+        </section>
+
+        <section class="carte mt-2">
+            <h2>Mes sentiers</h2>
+            {% if sentiers %}
+            {% for s in sentiers %}
+            <div style="padding:.5rem 0;border-bottom:1px solid #f0f0f0">
+                <a href="{{ url_for('sentiers.detail', id=s.id) }}" class="texte-petit">{{ s.nom }}</a>
+                <span class="texte-petit texte-doux"> — {{ s.region }}</span>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="texte-doux texte-petit">Aucun sentier ajouté.</p>
+            {% endif %}
+            <a href="{{ url_for('sentiers.nouveau') }}" class="btn btn-secondaire texte-petit mt-1">+ Ajouter un sentier</a>
+        </section>
+    </div>
+</div>
+{% endblock %}

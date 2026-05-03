@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block titre %}T.R.A.I.L — Terrain Rando Alerte Info Live{% endblock %}
+
+{% block contenu %}
+<div class="hero section">
+    <h1>Vérifiez l'état des sentiers en un clin d'œil.</h1>
+    <p class="text-soft mt-1" style="font-size: 1.15rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+        La plateforme communautaire pour partager et consulter les conditions réelles des parcours en montagne.
+    </p>
+    
+    <div class="mt-3" style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="{{ url_for('sentiers.index') }}" class="btn btn-primary">Explorer les sentiers</a>
+        {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('auth.inscription') }}" class="btn btn-secondary">Créer un compte</a>
+        {% else %}
+            <a href="{{ url_for('sentiers.index') }}" class="btn btn-secondary">Consulter les rapports</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="section mt-4">
+    <h2 class="text-center">Comment ça marche ?</h2>
+    <div class="features-grid">
+        <div class="feature-item">
+            <span class="feature-icon">🔍</span>
+            <h3>1. Trouvez un sentier</h3>
+            <p class="text-small text-soft">Recherchez parmi des centaines de parcours par région ou difficulté.</p>
+        </div>
+        <div class="feature-item">
+            <span class="feature-icon">📊</span>
+            <h3>2. Vérifiez l'état</h3>
+            <p class="text-small text-soft">Consultez les derniers rapports déposés par les traileurs et randonneurs.</p>
+        </div>
+        <div class="feature-item">
+            <span class="feature-icon">✍️</span>
+            <h3>3. Partagez l'info</h3>
+            <p class="text-small text-soft">Revenu de sortie ? Signalez les obstacles ou les bonnes conditions.</p>
+        </div>
+    </div>
+</div>
+
+<div class="section mt-4" style="background: var(--bg-card); border-radius: var(--radius-lg); padding: var(--space-md); border: 1px solid var(--border);">
+    <div class="grid grid-3">
+        <div class="text-center">
+            <span class="text-bold" style="font-size: 1.5rem; color: var(--primary);">7 jours</span>
+            <p class="text-small text-soft">Fraîcheur des données garantie par expiration auto.</p>
+        </div>
+        <div class="text-center">
+            <span class="text-bold" style="font-size: 1.5rem; color: var(--primary);">Multi-pratiques</span>
+            <p class="text-small text-soft">Trail, VTT, Randonnée, Ski de rando...</p>
+        </div>
+        <div class="text-center">
+            <span class="text-bold" style="font-size: 1.5rem; color: var(--primary);">Green IT</span>
+            <p class="text-small text-soft">Interface légère, 0 tracker, respect de votre vie privée.</p>
+        </div>
+    </div>
+</div>
+
+<div class="section mt-4">
+    <div class="flex-between">
+        <h2>Signalements récents</h2>
+        <a href="{{ url_for('sentiers.index') }}" class="text-small text-bold" style="color: var(--primary);">Voir tout →</a>
+    </div>
+
+    {% if rapports_recents %}
+    <div class="grid grid-2 mt-2">
+        {% for r in rapports_recents %}
+        <article class="card card-hover">
+            <div class="flex-between mb-1">
+                <span class="status status-{{ r.statut }}">
+                    {% if r.statut == 'praticable' %}PRATICABLE{% elif r.statut == 'partiel' %}PARTIEL{% else %}FERMÉ{% endif %}
+                </span>
+                <span class="text-small text-soft">il y a {{ r.anciennete }}</span>
+            </div>
+            <h3><a href="{{ url_for('sentiers.detail', id=r.sentier_id) }}">{{ r.sentier_nom }}</a></h3>
+            <p class="text-small text-soft">{{ r.region }} · par @{{ r.user_nom }}</p>
+            {% if r.commentaire %}
+                <p class="text-small mt-1" style="font-style: italic; color: var(--text-soft);">"{{ r.commentaire|truncate(80) }}"</p>
+            {% endif %}
+            <div class="mt-2">
+                <span class="badge">{{ r.type_pratique }}</span>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">⛰️</div>
+        <p>Aucun signalement récent sur les sentiers.</p>
+        <a href="{{ url_for('sentiers.index') }}" class="btn btn-primary mt-2">Soyez le premier à signaler !</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

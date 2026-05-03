@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titre %}T.R.A.I.L{% endblock %}</title>
+    <meta name="description" content="{% block description %}Terrain Rando Alerte Info Live — État réel des sentiers en montagne.{% endblock %}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+
+<header>
+    <div class="container nav-wrapper">
+        <a href="{{ url_for('index') }}" class="nav-logo">T.R.A.I.L</a>
+        <nav class="nav-links">
+            <a href="{{ url_for('sentiers.index') }}" class="{% if request.blueprint == 'sentiers' %}active{% endif %}">Sentiers</a>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('users.profil') }}" class="{% if request.blueprint == 'users' %}active{% endif %}">Profil</a>
+                <a href="{{ url_for('auth.deconnexion') }}" class="btn btn-ghost">Quitter</a>
+            {% else %}
+                <a href="{{ url_for('auth.connexion') }}">Connexion</a>
+                <a href="{{ url_for('auth.inscription') }}" class="btn btn-primary">S'inscrire</a>
+            {% endif %}
+            <button id="theme-toggle" class="theme-toggle" aria-label="Changer de thème" type="button">🌙</button>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for categorie, message in messages %}
+            <div class="flash flash-{{ categorie }}" style="margin-top: 1.5rem; padding: 1rem; border-radius: var(--radius); border: 1px solid transparent; {% if categorie == 'succes' %}background: var(--status-green-bg); color: var(--status-green); border-color: var(--status-green);{% elif categorie == 'erreur' %}background: var(--status-red-bg); color: var(--status-red); border-color: var(--status-red);{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="section-lg">
+        {% block contenu %}{% endblock %}
+    </div>
+</main>
+
+<footer>
+    <div class="container footer-wrapper">
+        <div class="text-small text-soft">
+            <span class="text-bold">T.R.A.I.L</span> · EFREI TI616 · Projet Green IT
+        </div>
+        <div class="nav-links">
+            <a href="https://github.com/alifarce/ti616_projet" target="_blank" class="text-small">GitHub</a>
+            <span class="text-small text-soft">v1.1</span>
+        </div>
+    </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block titre %}@{{ profil.nom }} — T.R.A.I.L{% endblock %}
+{% block contenu %}
+<section class="carte" style="max-width:600px">
+    <h1>@{{ profil.nom }}</h1>
+    <p class="texte-doux texte-petit">
+        Niveau : {{ profil.niveau }}
+        {% if profil.localisation %} · {{ profil.localisation }}{% endif %}
+        · Inscrit le {{ profil.date_inscription[:10] }}
+    </p>
+    <h2 class="mt-2">Rapports récents</h2>
+    {% if rapports %}
+    {% for r in rapports %}
+    <div style="padding:.5rem 0;border-bottom:1px solid #f0f0f0">
+        <span class="statut statut-{{ r.statut }}" style="font-size:.75rem">{{ r.statut }}</span>
+        <a href="{{ url_for('sentiers.detail', id=r.sentier_id) }}" class="texte-petit" style="margin-left:.5rem">{{ r.sentier_nom }}</a>
+        <span class="texte-petit texte-doux"> · {{ r.date_rapport[:10] }}</span>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="texte-doux texte-petit">Aucun rapport.</p>
+    {% endif %}
+</section>
+{% endblock %}

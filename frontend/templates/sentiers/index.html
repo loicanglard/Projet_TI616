@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block titre %}Sentiers — T.R.A.I.L{% endblock %}
+{% block contenu %}
+
+<div class="flex-between">
+    <h1>Explorer les sentiers</h1>
+    {% if current_user.is_authenticated %}
+    <a href="{{ url_for('sentiers.nouveau') }}" class="btn btn-primary">+ Nouveau sentier</a>
+    {% endif %}
+</div>
+
+<div class="card mt-2" style="padding: 1rem;">
+    <form method="get" class="grid grid-3" style="align-items: end; gap: 1rem;">
+        <div class="form-group" style="margin-bottom:0">
+            <label>Région</label>
+            <select name="region" class="form-control">
+                <option value="">Toutes les régions</option>
+                {% for r in regions %}
+                <option value="{{ r }}" {% if r==region %}selected{% endif %}>{{ r }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+            <label>Difficulté</label>
+            <select name="difficulte" class="form-control">
+                <option value="">Toutes les difficultés</option>
+                {% for d in difficultes %}
+                <option value="{{ d }}" {% if d==difficulte %}selected{% endif %}>{{ d|capitalize }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">Filtrer</button>
+            {% if region or difficulte %}
+            <a href="{{ url_for('sentiers.index') }}" class="btn btn-secondary" title="Réinitialiser">↺</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="mt-4">
+    {% if sentiers %}
+    <div class="grid grid-2">
+        {% for s in sentiers %}
+        <article class="card card-hover">
+            <div class="flex-between mb-1">
+                <span class="status status-{{ dernier_rapport.get(s.id)|default('inconnu') }}">
+                    {% set statut = dernier_rapport.get(s.id) %}
+                    {% if statut == 'praticable' %}PRATICABLE
+                    {% elif statut == 'partiel' %}PARTIEL
+                    {% elif statut == 'ferme' %}FERMÉ
+                    {% else %}SANS INFO{% endif %}
+                </span>
+                <span class="badge">{{ s.difficulte }}</span>
+            </div>
+            
+            <h3><a href="{{ url_for('sentiers.detail', id=s.id) }}">{{ s.nom }}</a></h3>
+            <p class="text-small text-soft">{{ s.region }}</p>
+
+            <div style="display: flex; gap: 1.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                <div>
+                    <span class="text-small text-soft text-bold" style="display:block; text-transform:uppercase; font-size:0.65rem;">Distance</span>
+                    <span class="text-bold">{{ s.distance_km }} km</span>
+                </div>
+                <div>
+                    <span class="text-small text-soft text-bold" style="display:block; text-transform:uppercase; font-size:0.65rem;">Dénivelé</span>
+                    <span class="text-bold">+{{ s.denivele_pos }} m</span>
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <a href="{{ url_for('sentiers.detail', id=s.id) }}" class="btn btn-secondary btn-full">Consulter les rapports</a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+
+    {% if total > par_page %}
+    <div class="flex-between mt-4">
+        {% if page > 1 %}
+        <a href="?page={{ page-1 }}&region={{ region }}&difficulte={{ difficulte }}" class="btn btn-secondary">← Précédent</a>
+        {% else %}<div></div>{% endif %}
+        
+        <span class="text-small text-soft">Page {{ page }} / {{ (total // par_page) + (1 if total % par_page else 0) }}</span>
+        
+        {% if page * par_page < total %}
+        <a href="?page={{ page+1 }}&region={{ region }}&difficulte={{ difficulte }}" class="btn btn-secondary">Suivant →</a>
+        {% else %}<div></div>{% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">🗺️</div>
+        <h3>Aucun sentier trouvé</h3>
+        <p>Ajustez vos filtres ou soyez le premier à ajouter un sentier dans cette zone.</p>
+        <a href="{{ url_for('sentiers.nouveau') }}" class="btn btn-primary mt-2">+ Ajouter un sentier</a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

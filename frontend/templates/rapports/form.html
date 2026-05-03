@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block titre %}{% if mode=='modifier' %}Modifier le rapport{% else %}Déposer un rapport{% endif %} — T.R.A.I.L{% endblock %}
+{% block contenu %}
+
+<div class="form-card" style="max-width:540px">
+    <h1 class="text-center">{% if mode=='modifier' %}Modifier le rapport{% else %}Déposer un rapport{% endif %}</h1>
+    <p class="text-small text-soft text-center mb-1">Partagez l'état du terrain avec la communauté</p>
+    
+    <form method="post" class="mt-2">
+        {% if mode=='nouveau' %}
+        <div class="form-group">
+            <label for="sentier_id">Sentier concerné *</label>
+            <select id="sentier_id" name="sentier_id" class="form-control" required>
+                <option value="">-- Choisir un sentier --</option>
+                {% for s in sentiers %}
+                <option value="{{ s.id }}" {% if sentier and sentier.id==s.id %}selected{% endif %}>
+                    {{ s.nom }} ({{ s.region }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% else %}
+        <div class="form-group">
+            <label>Sentier</label>
+            <p class="text-bold" style="color: var(--primary);">{{ sentier.nom }}</p>
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label>État actuel du sentier *</label>
+            <div style="display:flex; flex-direction:column; gap:0.75rem; margin-top:0.5rem">
+                {% for s in statuts %}
+                <label class="form-check card" style="padding: 0.75rem; border-color: var(--border); transition: border-color 0.2s; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <input type="radio" name="statut" value="{{ s }}"
+                            {% if (rapport and rapport.statut==s) or (not rapport and loop.first) %}checked{% endif %} required>
+                        <span class="status status-{{ s }}" style="font-size: 0.75rem;">
+                            {% if s=='praticable' %}PRATICABLE{% elif s=='partiel' %}PARTIEL{% else %}FERMÉ{% endif %}
+                        </span>
+                    </div>
+                    <span class="text-small text-soft">
+                        {% if s=='praticable' %}Conditions idéales{% elif s=='partiel' %}Passages délicats{% else %}Dangers / Travaux{% endif %}
+                    </span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="type_pratique">Votre activité *</label>
+            <select id="type_pratique" name="type_pratique" class="form-control" required>
+                {% for t in types_pratique %}
+                <option value="{{ t }}" {% if rapport and rapport.type_pratique==t %}selected{% endif %}>{{ t|capitalize }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Obstacles rencontrés</label>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; margin-top:0.5rem">
+                {% for o in obstacles_possibles %}
+                <label class="form-check">
+                    <input type="checkbox" name="obstacles" value="{{ o }}"
+                        {% if obstacles_actifs is defined and o in obstacles_actifs %}checked{% endif %}>
+                    <span class="text-small">{{ o.replace('_', ' ')|capitalize }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="commentaire">Précisions et observations</label>
+            <textarea id="commentaire" name="commentaire" class="form-control" rows="4" placeholder="Ex: Neige à partir de 1500m, arbres en travers du sentier sur la portion haute..."></textarea>
+        </div>
+
+        <div style="background: var(--bg); padding: 1rem; border-radius: var(--radius); margin-bottom: 1.5rem;">
+            <p class="text-small text-soft" style="margin:0; font-style: italic;">
+                Ce signalement sera public et expirera automatiquement après 7 jours pour garantir la fraîcheur de l'information.
+            </p>
+        </div>
+
+        <div style="display:flex; gap:1rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 2;">{% if mode=='modifier' %}Enregistrer{% else %}Déposer le rapport{% endif %}</button>
+            {% if sentier %}
+            <a href="{{ url_for('sentiers.detail', id=sentier.id) }}" class="btn btn-secondary" style="flex: 1;">Annuler</a>
+            {% else %}
+            <a href="{{ url_for('sentiers.index') }}" class="btn btn-secondary" style="flex: 1;">Annuler</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

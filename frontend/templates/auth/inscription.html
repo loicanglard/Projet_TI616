@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block titre %}Inscription — T.R.A.I.L{% endblock %}
+{% block contenu %}
+<div class="form-card">
+    <h1 class="text-center">Inscription</h1>
+    <p class="text-small text-soft text-center mb-1">Rejoignez la communauté T.R.A.I.L</p>
+    
+    <form method="post" class="mt-2">
+        <div class="form-group">
+            <label for="nom">Nom d'utilisateur</label>
+            <input type="text" id="nom" name="nom" class="form-control" value="{{ nom|default('') }}" required autofocus placeholder="ex: RandoFan74">
+        </div>
+        <div class="form-group">
+            <label for="email">Adresse Email</label>
+            <input type="email" id="email" name="email" class="form-control" value="{{ email|default('') }}" required placeholder="nom@exemple.com">
+        </div>
+        <div class="form-group">
+            <label for="mdp">Mot de passe</label>
+            <input type="password" id="mdp" name="mdp" class="form-control" required placeholder="8 caractères minimum">
+        </div>
+        <div class="form-group">
+            <label for="mdp_confirm">Confirmer le mot de passe</label>
+            <input type="password" id="mdp_confirm" name="mdp_confirm" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="niveau">Niveau technique</label>
+            <select id="niveau" name="niveau" class="form-control">
+                <option value="débutant" {% if niveau|default('débutant')=='débutant' %}selected{% endif %}>Débutant</option>
+                <option value="intermédiaire" {% if niveau|default('')=='intermédiaire' %}selected{% endif %}>Intermédiaire</option>
+                <option value="expert" {% if niveau|default('')=='expert' %}selected{% endif %}>Expert</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="localisation">Localisation <span class="text-soft" style="text-transform: none; font-weight: normal;">(optionnel)</span></label>
+            <input type="text" id="localisation" name="localisation" class="form-control" value="{{ localisation|default('') }}" placeholder="ex: Grenoble, Alpes">
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Créer mon compte</button>
+    </form>
+    
+    <p class="text-small text-soft text-center mt-2">
+        Déjà un compte ? <a href="{{ url_for('auth.connexion') }}" class="text-bold" style="color: var(--primary);">Se connecter</a>
+    </p>
+</div>
+{% endblock %}

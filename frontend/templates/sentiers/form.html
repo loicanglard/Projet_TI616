@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block titre %}{% if mode=='modifier' %}Modifier{% else %}Nouveau sentier{% endif %} — T.R.A.I.L{% endblock %}
+{% block contenu %}
+
+<div class="form-card" style="max-width:600px">
+    <h1 class="text-center">{% if mode=='modifier' %}Modifier le sentier{% else %}Ajouter un sentier{% endif %}</h1>
+    <p class="text-small text-soft text-center mb-1">Remplissez les informations techniques du parcours</p>
+
+    <form method="post" class="mt-2">
+        <div class="form-group">
+            <label for="nom">Nom du sentier *</label>
+            <input type="text" id="nom" name="nom" class="form-control" value="{{ sentier.nom if sentier else '' }}" required placeholder="ex: Tour du Mont Blanc">
+        </div>
+        <div class="form-group">
+            <label for="region">Région / Massif *</label>
+            <input type="text" id="region" name="region" class="form-control" value="{{ sentier.region if sentier else '' }}" required placeholder="ex: Alpes du Nord, Beaufortain...">
+        </div>
+        
+        <div class="grid grid-2">
+            <div class="form-group">
+                <label for="distance_km">Distance (km) *</label>
+                <input type="number" id="distance_km" name="distance_km" class="form-control" value="{{ sentier.distance_km if sentier else '' }}" step="0.1" min="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="denivele_pos">Dénivelé + (m) *</label>
+                <input type="number" id="denivele_pos" name="denivele_pos" class="form-control" value="{{ sentier.denivele_pos if sentier else '' }}" min="0" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="difficulte">Niveau de difficulté *</label>
+            <select id="difficulte" name="difficulte" class="form-control" required>
+                {% for d in difficultes %}
+                <option value="{{ d }}" {% if sentier and sentier.difficulte==d %}selected{% endif %}>{{ d|capitalize }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Types de pratique autorisés</label>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:.25rem">
+                {% for t in types_pratique %}
+                <label class="form-check">
+                    <input type="checkbox" name="types_pratique" value="{{ t }}"
+                        {% if sentier and t in sentier.types_pratique.split(',') %}checked{% elif not sentier and t=='trail' %}checked{% endif %}>
+                    <span class="text-small">{{ t|capitalize }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="terrain">Type de terrain principal</label>
+            <input type="text" id="terrain" name="terrain" class="form-control" value="{{ sentier.terrain if sentier and sentier.terrain else '' }}" placeholder="ex: Rocailleux, Sentier forestier, Mixte...">
+        </div>
+
+        <div class="form-group">
+            <label for="saison_recommandee">Période idéale</label>
+            <input type="text" id="saison_recommandee" name="saison_recommandee" class="form-control" value="{{ sentier.saison_recommandee if sentier and sentier.saison_recommandee else '' }}" placeholder="ex: Mai à Octobre">
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description et accès</label>
+            <textarea id="description" name="description" class="form-control" rows="4" placeholder="Points de passage, stationnement, particularités...">{{ sentier.description if sentier and sentier.description else '' }}</textarea>
+        </div>
+
+        <div style="display:flex;gap:1rem;margin-top:2rem">
+            <button type="submit" class="btn btn-primary" style="flex: 2;">{% if mode=='modifier' %}Enregistrer les modifications{% else %}Créer le sentier{% endif %}</button>
+            <a href="{{ url_for('sentiers.index') }}" class="btn btn-secondary" style="flex: 1;">Annuler</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
