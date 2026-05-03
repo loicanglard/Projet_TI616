@@ -6,6 +6,7 @@
     <p class="text-small text-soft text-center mb-1">Accédez à votre compte T.R.A.I.L</p>
     
     <form method="post" class="mt-2">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-group">
             <label for="email">Adresse Email</label>
             <input type="email" id="email" name="email" class="form-control" required autofocus placeholder="nom@exemple.com">

@@ -7,6 +7,7 @@
     <p class="text-small text-soft text-center mb-1">Partagez l'état du terrain avec la communauté</p>
     
     <form method="post" class="mt-2">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         {% if mode=='nouveau' %}
         <div class="form-group">
             <label for="sentier_id">Sentier concerné *</label>
@@ -70,7 +71,7 @@
 
         <div class="form-group">
             <label for="commentaire">Précisions et observations</label>
-            <textarea id="commentaire" name="commentaire" class="form-control" rows="4" placeholder="Ex: Neige à partir de 1500m, arbres en travers du sentier sur la portion haute..."></textarea>
+            <textarea id="commentaire" name="commentaire" class="form-control" rows="4" placeholder="Ex: Neige à partir de 1500m, arbres en travers du sentier sur la portion haute...">{{ rapport.commentaire if rapport and rapport.commentaire else '' }}</textarea>
         </div>
 
         <div style="background: var(--bg); padding: 1rem; border-radius: var(--radius); margin-bottom: 1.5rem;">

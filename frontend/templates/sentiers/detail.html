@@ -17,6 +17,7 @@
         {% if current_user.is_authenticated and (current_user.id == sentier.user_id or current_user.is_admin) %}
         <a href="{{ url_for('sentiers.modifier', id=sentier.id) }}" class="btn btn-secondary">Modifier</a>
         <form method="post" action="{{ url_for('sentiers.supprimer', id=sentier.id) }}" style="display:inline" onsubmit="return confirm('Supprimer ce sentier ?')">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="btn btn-ghost" style="color: var(--status-red);">Supprimer</button>
         </form>
         {% endif %}
@@ -89,7 +90,8 @@
             <div class="flex-between mb-1" style="align-items: flex-start;">
                 <div style="display: flex; gap: 0.75rem; align-items: center;">
                     <span class="status status-{{ r.statut }}">
-                        {% if r.statut == 'praticable' %}PRATICABLE{% elif r.statut == 'partiel' %}PARTIEL{% else %}FERMÉ{% endif %}
+                        <span class="status-dot"></span>
+                        {% if r.statut == 'praticable' %}Praticable{% elif r.statut == 'partiel' %}Partiel{% else %}Fermé{% endif %}
                     </span>
                     <span class="badge">{{ r.type_pratique }}</span>
                 </div>
@@ -118,6 +120,7 @@
             <div class="mt-2 pt-1" style="border-top: 1px solid var(--border); display: flex; gap: 1rem; justify-content: flex-end;">
                 <a href="{{ url_for('rapports.modifier', id=r.id) }}" class="text-small text-bold" style="color: var(--primary);">Modifier</a>
                 <form method="post" action="{{ url_for('rapports.supprimer', id=r.id) }}" onsubmit="return confirm('Supprimer ce rapport ?')">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="text-small text-bold" style="background: none; border: none; color: var(--status-red); cursor: pointer; padding: 0;">Supprimer</button>
                 </form>
             </div>
@@ -136,5 +139,4 @@
     </div>
     {% endif %}
 </div>
-
 {% endblock %}

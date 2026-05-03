@@ -68,7 +68,8 @@
         <article class="card card-hover">
             <div class="flex-between mb-1">
                 <span class="status status-{{ r.statut }}">
-                    {% if r.statut == 'praticable' %}PRATICABLE{% elif r.statut == 'partiel' %}PARTIEL{% else %}FERMÉ{% endif %}
+                    <span class="status-dot"></span>
+                    {% if r.statut == 'praticable' %}Praticable{% elif r.statut == 'partiel' %}Partiel{% else %}Fermé{% endif %}
                 </span>
                 <span class="text-small text-soft">il y a {{ r.anciennete }}</span>
             </div>

@@ -43,33 +43,40 @@
     <div class="grid grid-2">
         {% for s in sentiers %}
         <article class="card card-hover">
+            {% set statut = dernier_rapport.get(s.id) %}
             <div class="flex-between mb-1">
-                <span class="status status-{{ dernier_rapport.get(s.id)|default('inconnu') }}">
-                    {% set statut = dernier_rapport.get(s.id) %}
-                    {% if statut == 'praticable' %}PRATICABLE
-                    {% elif statut == 'partiel' %}PARTIEL
-                    {% elif statut == 'ferme' %}FERMÉ
-                    {% else %}SANS INFO{% endif %}
+                <span class="status status-{{ statut|default('inconnu') }}">
+                    <span class="status-dot"></span>
+                    {% if statut == 'praticable' %}Praticable
+                    {% elif statut == 'partiel' %}Partiel
+                    {% elif statut == 'ferme' %}Fermé
+                    {% else %}État à vérifier{% endif %}
                 </span>
                 <span class="badge">{{ s.difficulte }}</span>
             </div>
             
-            <h3><a href="{{ url_for('sentiers.detail', id=s.id) }}">{{ s.nom }}</a></h3>
+            <h3 class="mt-1"><a href="{{ url_for('sentiers.detail', id=s.id) }}">{{ s.nom }}</a></h3>
             <p class="text-small text-soft">{{ s.region }}</p>
 
-            <div style="display: flex; gap: 1.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
-                <div>
-                    <span class="text-small text-soft text-bold" style="display:block; text-transform:uppercase; font-size:0.65rem;">Distance</span>
-                    <span class="text-bold">{{ s.distance_km }} km</span>
+            {% if not statut %}
+            <p class="text-small mt-1" style="color: var(--primary); font-style: italic;">
+                Aidez la communauté en déposant le premier rapport.
+            </p>
+            {% endif %}
+
+            <div class="card-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Distance</span>
+                    <span class="stat-value">{{ s.distance_km }} km</span>
                 </div>
-                <div>
-                    <span class="text-small text-soft text-bold" style="display:block; text-transform:uppercase; font-size:0.65rem;">Dénivelé</span>
-                    <span class="text-bold">+{{ s.denivele_pos }} m</span>
+                <div class="stat-item">
+                    <span class="stat-label">Dénivelé</span>
+                    <span class="stat-value">+{{ s.denivele_pos }} m</span>
                 </div>
             </div>
 
             <div class="mt-2">
-                <a href="{{ url_for('sentiers.detail', id=s.id) }}" class="btn btn-secondary btn-full">Consulter les rapports</a>
+                <a href="{{ url_for('sentiers.detail', id=s.id) }}" class="btn btn-secondary btn-full">Voir les conditions →</a>
             </div>
         </article>
         {% endfor %}
@@ -98,5 +105,4 @@
     </div>
     {% endif %}
 </div>
-
 {% endblock %}

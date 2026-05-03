@@ -7,6 +7,7 @@
     <p class="text-small text-soft text-center mb-1">Remplissez les informations techniques du parcours</p>
 
     <form method="post" class="mt-2">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-group">
             <label for="nom">Nom du sentier *</label>
             <input type="text" id="nom" name="nom" class="form-control" value="{{ sentier.nom if sentier else '' }}" required placeholder="ex: Tour du Mont Blanc">

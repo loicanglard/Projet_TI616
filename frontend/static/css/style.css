@@ -156,9 +156,38 @@ header {
 }
 
 .card-hover:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    border-color: var(--primary);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+}
+
+.card-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.2rem;
+}
+
+.stat-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text);
 }
 
 /* Forms */
@@ -194,18 +223,32 @@ header {
 /* Badges */
 .badge {
     display: inline-flex;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: 800;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
-    background: var(--border);
+    background: var(--bg);
+    color: var(--text-soft);
+    border: 1px solid var(--border);
+    letter-spacing: 0.05em;
 }
 
-.status { font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.8rem; }
+.status { 
+    font-weight: 800; 
+    padding: 0.3rem 0.75rem; 
+    border-radius: 20px; 
+    font-size: 0.75rem; 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 0.4rem; 
+}
+.status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: currentColor; }
+
 .status-praticable { background: var(--status-green-bg); color: var(--status-green); }
 .status-partiel     { background: var(--status-orange-bg); color: var(--status-orange); }
 .status-ferme       { background: var(--status-red-bg); color: var(--status-red); }
+.status-inconnu     { background: var(--bg); color: var(--text-soft); border: 1px solid var(--border); }
 
 /* Empty State */
 .empty-state {

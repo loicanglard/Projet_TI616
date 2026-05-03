@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from flask import Flask, render_template
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 from backend.db import init_db, get_db
 from backend.routes.auth import auth_bp
 from backend.routes.users import users_bp
@@ -17,17 +18,8 @@ def create_app():
     )
     app.config.from_object('config.Config')
 
+    csrf = CSRFProtect(app)
     init_db(app)
-
-    # Auto-initialisation si la base n'existe pas
-    db_path = app.config['DATABASE']
-    if not os.path.exists(db_path):
-        # Créer le dossier database si nécessaire
-        os.makedirs(os.path.dirname(db_path), exist_ok=True)
-        with app.app_context():
-            from backend.db import init_db_schema
-            init_db_schema()
-            print(f"Base de données initialisée à : {db_path}")
 
     # Flask-Login setup
     login_manager = LoginManager()
