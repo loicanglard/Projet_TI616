@@ -18,11 +18,11 @@ T.R.A.I.L est une plateforme communautaire sobre permettant aux pratiquants trai
 
 | Nom | Rôle principal |
 |-----|---------------|
-| *Prénom NOM* | Back-end (auth, routes) |
-| *Prénom NOM* | Back-end (sentiers, rapports) |
-| *Prénom NOM* | Front-end (templates, CSS) |
-| *Prénom NOM* | BDD, déploiement, tests |
-| *Prénom NOM* | Documentation, Green IT |
+| *Loïc Anglard* | Back-end (auth, routes) |
+| *Mathieu Danthine* | Back-end (sentiers, rapports) |
+| *Esteban Batard-Plaza* | Front-end (templates, CSS) |
+| *Lilian Cao* | BDD, déploiement, tests |
+| *Maelle Chollet* | Documentation, Green IT |
 
 ---
 
