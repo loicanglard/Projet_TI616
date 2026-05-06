@@ -1,8 +1,8 @@
-# TrailMémoire — Note sur la sobriété numérique
+# T.R.A.I.L — Note sur la sobriété numérique
 
 ## Principe directeur
 
-TrailMémoire est un projet dédié à la pratique du trail, une discipline en pleine
+T.R.A.I.L est un projet dédié à la pratique du trail, une discipline en pleine
 nature. Il serait paradoxal que l'outil numérique qui lui est consacré contribue
 à dégrader les ressources que les coureurs s'évertuent à préserver. La sobriété
 numérique n'est donc pas une contrainte imposée par le cahier des charges : c'est
@@ -62,7 +62,7 @@ chiffrées) et élimine à lui seul la principale source de poids des pages web.
 | Largest Contentful Paint (LCP) | < 2,0 s |
 | Empreinte CO₂ / visite | < 0,05 g |
 
-## Ce que TrailMémoire ne fera pas
+## Ce que T.R.A.I.L ne fera pas
 
 - Pas de carte interactive (Leaflet, Google Maps) — une carte statique suffira si besoin
 - Pas de téléchargement de fichiers GPX
