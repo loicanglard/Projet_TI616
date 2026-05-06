@@ -1,4 +1,4 @@
-# TrailMémoire — Choix technologiques justifiés
+# T.R.A.I.L — Choix technologiques justifiés
 
 ## Tableau récapitulatif
 
@@ -34,7 +34,7 @@ aucun framework CSS externe, aucune bibliothèque d'envoi d'e-mails.
 
 Django est un excellent framework, mais il embarque un ORM complet, un panel
 d'administration, un système d'authentification étendu et de nombreuses
-fonctionnalités non utilisées dans ce projet. Pour TrailMémoire, Django serait
+fonctionnalités non utilisées dans ce projet. Pour T.R.A.I.L, Django serait
 surdimensionné : davantage de code chargé, davantage de dépendances transitives,
 une surface d'attaque plus large.
 
